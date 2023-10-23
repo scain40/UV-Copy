@@ -18,14 +18,14 @@ class PasteUV(bpy.types.Operator):
         return {'FINISHED'}            # Lets Blender know the operator finished successfully.
 
 def menu_func(self, context):
-    self.layout.operator(CopyUV.bl_idname)
+    self.layout.operator(PasteUV.bl_idname)
 
 def register():
-    bpy.utils.register_class(CopyUV)
+    bpy.utils.register_class(PasteUV)
     bpy.types.VIEW3D_MT_object.append(menu_func)  # Adds the new operator to an existing menu.
 
 def unregister():
-    bpy.utils.unregister_class(CopyUV)
+    bpy.utils.unregister_class(PasteUV)
 
 
 # This allows you to run the script directly from Blender's Text editor
