@@ -1,31 +1,59 @@
 bl_info = {
     "name": "Copy Paste Shortcuts",
-    "blender": (2, 80, 0),
+    "blender": (3, 5, 0),
     "category": "UV",
 }
 
 import bpy
-import bmesh
 
 class CopyUV(bpy.types.Operator):
     bl_idname = "uv.custom_copy_uv"        # Unique identifier for buttons and menu items to reference.
     bl_label = "Custom Copy UV"         # Display name in the interface.
-    bl_options = {'REGISTER', 'UNDO'}  # Enable undo for the operator.
+    bl_options = {'REGISTER', 'UNDO'}
 
-    def execute(self, context):        # execute() is called when running the operator.  
-        bpy.ops.uv.select_box(pinned=False, xmin=0, xmax=1920, ymin=0, ymax=1080, wait_for_input=False, mode='SET')
-        bpy.ops.uv.copy()
-        return {'FINISHED'}            # Lets Blender know the operator finished successfully.
+    def execute(self, context):
+        # Finding a correct area type for the operator
+        area_type = 'IMAGE_EDITOR'
+        areas  = [area for area in bpy.context.window.screen.areas if area.type == area_type]
+
+        if len(areas) <= 0:
+            raise Exception(f"Make sure an Area of type {area_type} is open or visible in your screen!")
+
+        # Setting the override context
+        with bpy.context.temp_override(
+            window=bpy.context.window,
+            area=areas[0],
+            region=[region for region in areas[0].regions if region.type == 'WINDOW'][0],
+            screen=bpy.context.window.screen
+        ):
+            bpy.ops.uv.select_box(pinned=False, xmin=0, xmax=1920, ymin=0, ymax=1080, wait_for_input=False, mode='SET')
+            bpy.ops.uv.copy()
+        return {'FINISHED'}
 
 class PasteUV(bpy.types.Operator):
     bl_idname = "uv.custom_paste_uv"        # Unique identifier for buttons and menu items to reference.
     bl_label = "Custom Paste UV"         # Display name in the interface.
-    bl_options = {'REGISTER', 'UNDO'}  # Enable undo for the operator.
+    bl_options = {'REGISTER', 'UNDO'}
 
-    def execute(self, context):        # execute() is called when running the operator.  
-        bpy.ops.uv.select_box(pinned=False, xmin=0, xmax=1920, ymin=0, ymax=1080, wait_for_input=False, mode='SET')
-        bpy.ops.uv.paste()
-        return {'FINISHED'}            # Lets Blender know the operator finished successfully.
+    def execute(self, context):
+        # Finding a correct area type for the operator
+        area_type = 'IMAGE_EDITOR'
+        areas  = [area for area in bpy.context.window.screen.areas if area.type == area_type]
+
+        if len(areas) <= 0:
+            raise Exception(f"Make sure an Area of type {area_type} is open or visible in your screen!")
+
+        # Setting the override context
+        with bpy.context.temp_override(
+            window=bpy.context.window,
+            area=areas[0],
+            region=[region for region in areas[0].regions if region.type == 'WINDOW'][0],
+            screen=bpy.context.window.screen
+        ):
+            bpy.ops.uv.select_box(pinned=False, xmin=0, xmax=1920, ymin=0, ymax=1080, wait_for_input=False, mode='SET')
+            bpy.ops.uv.paste()
+
+        return {'FINISHED'}
 
 
 def copy_func(self, context):
